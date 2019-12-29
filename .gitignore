@@ -41,3 +41,7 @@ Temporary Items
 .history
 
 # End of https://www.gitignore.io/api/macos,visualstudiocode
+
+.cache
+dist
+node_modules
