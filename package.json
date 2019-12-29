@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "parcel index.html ",
+    "build": "parcel build index.html --public-url /zerolikespodcast/",
+    "predeploy": "npm run-script build",
+    "deploy": "gh-pages -d dist"
   },
   "browserslist": [
     "last 1 Chrome versions"
@@ -14,5 +17,8 @@
   "license": "ISC",
   "dependencies": {
     "simplex-noise": "^2.4.0"
+  },
+  "devDependencies": {
+    "cssnano": "^4.1.10"
   }
 }
