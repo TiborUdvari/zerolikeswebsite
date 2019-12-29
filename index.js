@@ -1,226 +1,392 @@
-const imgURL = require('./assets/heart.png');
-const logoURL = require('./assets/logo.svg');
+// modules are defined as an array
+// [ module function, map of requires ]
+//
+// map of requires is short require name -> numeric require
+//
+// anything defined in a previous bundle is accessed via the
+// orig method which is the require for previous bundles
+parcelRequire = (function (modules, cache, entry, globalName) {
+  // Save the require from previous bundle to this closure if any
+  var previousRequire = typeof parcelRequire === 'function' && parcelRequire;
+  var nodeRequire = typeof require === 'function' && require;
 
-var SimplexNoise = require('simplex-noise'),
-    simplex = new SimplexNoise(Math.random);
+  function newRequire(name, jumped) {
+    if (!cache[name]) {
+      if (!modules[name]) {
+        // if we cannot find the module within our internal map or
+        // cache jump to the current global require ie. the last bundle
+        // that was added to the page.
+        var currentRequire = typeof parcelRequire === 'function' && parcelRequire;
+        if (!jumped && currentRequire) {
+          return currentRequire(name, true);
+        }
 
-function loadImage(url) {
-    return new Promise(r => {
-        let i = new Image();
-        i.onload = (() => r(i));
-        i.src = url;
+        // If there are other bundles on this page the require from the
+        // previous one is saved to 'previousRequire'. Repeat this as
+        // many times as there are bundles until the module is found or
+        // we exhaust the require chain.
+        if (previousRequire) {
+          return previousRequire(name, true);
+        }
+
+        // Try the node require function if it exists.
+        if (nodeRequire && typeof name === 'string') {
+          return nodeRequire(name);
+        }
+
+        var err = new Error('Cannot find module \'' + name + '\'');
+        err.code = 'MODULE_NOT_FOUND';
+        throw err;
+      }
+
+      localRequire.resolve = resolve;
+      localRequire.cache = {};
+
+      var module = cache[name] = new newRequire.Module(name);
+
+      modules[name][0].call(module.exports, localRequire, module, module.exports, this);
+    }
+
+    return cache[name].exports;
+
+    function localRequire(x){
+      return newRequire(localRequire.resolve(x));
+    }
+
+    function resolve(x){
+      return modules[name][1][x] || x;
+    }
+  }
+
+  function Module(moduleName) {
+    this.id = moduleName;
+    this.bundle = newRequire;
+    this.exports = {};
+  }
+
+  newRequire.isParcelRequire = true;
+  newRequire.Module = Module;
+  newRequire.modules = modules;
+  newRequire.cache = cache;
+  newRequire.parent = previousRequire;
+  newRequire.register = function (id, exports) {
+    modules[id] = [function (require, module) {
+      module.exports = exports;
+    }, {}];
+  };
+
+  var error;
+  for (var i = 0; i < entry.length; i++) {
+    try {
+      newRequire(entry[i]);
+    } catch (e) {
+      // Save first error but execute all entries
+      if (!error) {
+        error = e;
+      }
+    }
+  }
+
+  if (entry.length) {
+    // Expose entry point to Node, AMD or browser globals
+    // Based on https://github.com/ForbesLindesay/umd/blob/master/template.js
+    var mainExports = newRequire(entry[entry.length - 1]);
+
+    // CommonJS
+    if (typeof exports === "object" && typeof module !== "undefined") {
+      module.exports = mainExports;
+
+    // RequireJS
+    } else if (typeof define === "function" && define.amd) {
+     define(function () {
+       return mainExports;
+     });
+
+    // <script>
+    } else if (globalName) {
+      this[globalName] = mainExports;
+    }
+  }
+
+  // Override the current require with this new one
+  parcelRequire = newRequire;
+
+  if (error) {
+    // throw error from earlier, _after updating parcelRequire_
+    throw error;
+  }
+
+  return newRequire;
+})({"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+var bundleURL = null;
+
+function getBundleURLCached() {
+  if (!bundleURL) {
+    bundleURL = getBundleURL();
+  }
+
+  return bundleURL;
+}
+
+function getBundleURL() {
+  // Attempt to find the URL of the current script and use that as the base URL
+  try {
+    throw new Error();
+  } catch (err) {
+    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
+
+    if (matches) {
+      return getBaseURL(matches[0]);
+    }
+  }
+
+  return '/';
+}
+
+function getBaseURL(url) {
+  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
+}
+
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+},{}],"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
+var bundle = require('./bundle-url');
+
+function updateLink(link) {
+  var newLink = link.cloneNode();
+
+  newLink.onload = function () {
+    link.remove();
+  };
+
+  newLink.href = link.href.split('?')[0] + '?' + Date.now();
+  link.parentNode.insertBefore(newLink, link.nextSibling);
+}
+
+var cssTimeout = null;
+
+function reloadCSS() {
+  if (cssTimeout) {
+    return;
+  }
+
+  cssTimeout = setTimeout(function () {
+    var links = document.querySelectorAll('link[rel="stylesheet"]');
+
+    for (var i = 0; i < links.length; i++) {
+      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
+        updateLink(links[i]);
+      }
+    }
+
+    cssTimeout = null;
+  }, 50);
+}
+
+module.exports = reloadCSS;
+},{"./bundle-url":"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+var global = arguments[3];
+var OVERLAY_ID = '__parcel__error__overlay__';
+var OldModule = module.bundle.Module;
+
+function Module(moduleName) {
+  OldModule.call(this, moduleName);
+  this.hot = {
+    data: module.bundle.hotData,
+    _acceptCallbacks: [],
+    _disposeCallbacks: [],
+    accept: function (fn) {
+      this._acceptCallbacks.push(fn || function () {});
+    },
+    dispose: function (fn) {
+      this._disposeCallbacks.push(fn);
+    }
+  };
+  module.bundle.hotData = null;
+}
+
+module.bundle.Module = Module;
+var checkedAssets, assetsToAccept;
+var parent = module.bundle.parent;
+
+if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
+  var hostname = "" || location.hostname;
+  var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58809" + '/');
+
+  ws.onmessage = function (event) {
+    checkedAssets = {};
+    assetsToAccept = [];
+    var data = JSON.parse(event.data);
+
+    if (data.type === 'update') {
+      var handled = false;
+      data.assets.forEach(function (asset) {
+        if (!asset.isNew) {
+          var didAccept = hmrAcceptCheck(global.parcelRequire, asset.id);
+
+          if (didAccept) {
+            handled = true;
+          }
+        }
+      }); // Enable HMR for CSS by default.
+
+      handled = handled || data.assets.every(function (asset) {
+        return asset.type === 'css' && asset.generated.js;
+      });
+
+      if (handled) {
+        console.clear();
+        data.assets.forEach(function (asset) {
+          hmrApply(global.parcelRequire, asset);
+        });
+        assetsToAccept.forEach(function (v) {
+          hmrAcceptRun(v[0], v[1]);
+        });
+      } else if (location.reload) {
+        // `location` global exists in a web worker context but lacks `.reload()` function.
+        location.reload();
+      }
+    }
+
+    if (data.type === 'reload') {
+      ws.close();
+
+      ws.onclose = function () {
+        location.reload();
+      };
+    }
+
+    if (data.type === 'error-resolved') {
+      console.log('[parcel] ✨ Error resolved');
+      removeErrorOverlay();
+    }
+
+    if (data.type === 'error') {
+      console.error('[parcel] 🚨  ' + data.error.message + '\n' + data.error.stack);
+      removeErrorOverlay();
+      var overlay = createErrorOverlay(data);
+      document.body.appendChild(overlay);
+    }
+  };
+}
+
+function removeErrorOverlay() {
+  var overlay = document.getElementById(OVERLAY_ID);
+
+  if (overlay) {
+    overlay.remove();
+  }
+}
+
+function createErrorOverlay(data) {
+  var overlay = document.createElement('div');
+  overlay.id = OVERLAY_ID; // html encode message and stack trace
+
+  var message = document.createElement('div');
+  var stackTrace = document.createElement('pre');
+  message.innerText = data.error.message;
+  stackTrace.innerText = data.error.stack;
+  overlay.innerHTML = '<div style="background: black; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; opacity: 0.85; font-family: Menlo, Consolas, monospace; z-index: 9999;">' + '<span style="background: red; padding: 2px 4px; border-radius: 2px;">ERROR</span>' + '<span style="top: 2px; margin-left: 5px; position: relative;">🚨</span>' + '<div style="font-size: 18px; font-weight: bold; margin-top: 20px;">' + message.innerHTML + '</div>' + '<pre>' + stackTrace.innerHTML + '</pre>' + '</div>';
+  return overlay;
+}
+
+function getParents(bundle, id) {
+  var modules = bundle.modules;
+
+  if (!modules) {
+    return [];
+  }
+
+  var parents = [];
+  var k, d, dep;
+
+  for (k in modules) {
+    for (d in modules[k][1]) {
+      dep = modules[k][1][d];
+
+      if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) {
+        parents.push(k);
+      }
+    }
+  }
+
+  if (bundle.parent) {
+    parents = parents.concat(getParents(bundle.parent, id));
+  }
+
+  return parents;
+}
+
+function hmrApply(bundle, asset) {
+  var modules = bundle.modules;
+
+  if (!modules) {
+    return;
+  }
+
+  if (modules[asset.id] || !bundle.parent) {
+    var fn = new Function('require', 'module', 'exports', asset.generated.js);
+    asset.isNew = !modules[asset.id];
+    modules[asset.id] = [fn, asset.deps];
+  } else if (bundle.parent) {
+    hmrApply(bundle.parent, asset);
+  }
+}
+
+function hmrAcceptCheck(bundle, id) {
+  var modules = bundle.modules;
+
+  if (!modules) {
+    return;
+  }
+
+  if (!modules[id] && bundle.parent) {
+    return hmrAcceptCheck(bundle.parent, id);
+  }
+
+  if (checkedAssets[id]) {
+    return;
+  }
+
+  checkedAssets[id] = true;
+  var cached = bundle.cache[id];
+  assetsToAccept.push([bundle, id]);
+
+  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
+    return true;
+  }
+
+  return getParents(global.parcelRequire, id).some(function (id) {
+    return hmrAcceptCheck(global.parcelRequire, id);
+  });
+}
+
+function hmrAcceptRun(bundle, id) {
+  var cached = bundle.cache[id];
+  bundle.hotData = {};
+
+  if (cached) {
+    cached.hot.data = bundle.hotData;
+  }
+
+  if (cached && cached.hot && cached.hot._disposeCallbacks.length) {
+    cached.hot._disposeCallbacks.forEach(function (cb) {
+      cb(bundle.hotData);
     });
+  }
+
+  delete bundle.cache[id];
+  bundle(id);
+  cached = bundle.cache[id];
+
+  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
+    cached.hot._acceptCallbacks.forEach(function (cb) {
+      cb();
+    });
+
+    return true;
+  }
 }
-
-setInterval(() => {
-    simplex = new SimplexNoise(Math.random);
-}, 2000);
-
-var mouseX = 0;
-var mouseY = 0;
-
-let img = null;
-let logo = null;
-let x = 0;
-
-let hearts = [];
-let repulsors = [];
-
-const maxSpeed = 2;
-const logoSize = 250;
-const tresh = logoSize * 1;
-let logoRepulsor = null;
-let mouseRepulsor = null;
-const size = 40;
-
-const fallingParams = {
-    n: 30,
-    gravity: 1,
-    noise: 0,
-    edgeFun: () => (Math.random() * canvas.width * 0.4) + canvas.width * 0.2
-}
-
-const wiggleParams = {
-    n: 1,
-    gravity: 0,
-    noise: 1,
-    edgeFun: () => Math.random() * canvas.width
-
-}
-
-const paramOptions = [wiggleParams, fallingParams]
-
-var params = paramOptions[Math.floor(Math.random() * (paramOptions.length))];
-console.log(params)
-
-
-const canvas = document.getElementById('canvas');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-const c = canvas.getContext('2d');
-c.fillStyle = "#ffffff";
-
-class Particle {
-    constructor(x, y) {
-        this.pos = {
-            x: x,
-            y: y
-        };
-        this.acc = {
-            x: 0,
-            y: 0
-        };
-        this.vel = {
-            x: 0,
-            y: 0
-        };
-        this.mass = Math.max(0.1, Math.random());
-    }
-
-    applyForce(fx, fy) {
-        this.acc.x += fx * this.mass;
-        this.acc.y += fy * this.mass;
-    }
-
-    checkEdges() {
-        if (this.pos.x > canvas.width + size / 2) {
-            this.pos.x = -size / 2;
-        }
-        if (this.pos.x < -size / 2) {
-            this.pos.x = canvas.width + size / 2;
-        }
-        if (this.pos.y > canvas.height + size / 2) {
-            this.pos.y = -size / 2;
-            this.pos.x = params.edgeFun();
-            this.vel.y = 0;
-        }
-        if (this.pos.y < -size / 2) {
-            this.pos.y = canvas.height + size / 2;
-        }
-    }
-
-    draw() {
-        this.checkEdges();
-
-        this.vel.x += this.acc.x;
-        this.vel.y += this.acc.y;
-
-        this.vel.x *= 0.95;
-        this.vel.y *= 0.95;
-
-        this.vel.x = Math.min(this.vel.x, maxSpeed);
-        this.vel.y = Math.min(this.vel.y, maxSpeed);
-
-        this.pos.x += this.vel.x;
-        this.pos.y += this.vel.y;
-
-        c.drawImage(img, this.pos.x, this.pos.y, size, size);
-        this.acc.x = 0;
-        this.acc.y = 0;
-    }
-}
-
-class Repulsor {
-    constructor(x, y, burst = false, visible = false) {
-        this.pos = {
-            x: x,
-            y: y
-        };
-        this.lifeTime = burst ? 2 : 1000000000000;
-        this.life = 0;
-        this.visible = visible;
-    }
-
-    repulse(particles) {
-        particles.forEach(p => {
-            let rx = 0;
-            let ry = 0;
-
-            const distX = Math.abs(this.pos.x - p.pos.x);
-            const distY = Math.abs(this.pos.y - p.pos.y);
-
-            if (distX * distX + distY * distY < tresh * tresh) {
-                const dirx = (p.pos.x - this.pos.x) / distX;
-                const diry = (p.pos.y - this.pos.y) / distY;
-
-                rx = 1 / dirx;
-                ry = 1 / diry;
-            }
-
-            p.applyForce(rx, ry);
-        })
-    }
-
-    draw() {
-        if (this.life > this.lifeTime) {
-            if (repulsors.indexOf(this) > -1) {
-                repulsors.splice(repulsors.indexOf(this), 1); 
-
-            }
-        }
-
-        this.life += 1;
-        if (this.visible) {
-            c.drawImage(logo, this.pos.x - logoSize / 2, this.pos.y - logoSize / 2, logoSize, logoSize);
-        }
-    }
-}
-
-function draw() {
-    c.clearRect(0, 0, window.innerWidth, window.innerHeight)
-    x += 0.001;
-
-    hearts.forEach(h => h.applyForce(0.01, 0.5) * params.gravity )
-    hearts.forEach(h => h.applyForce(simplex.noise2D(h.pos.x / 20, 0) * params.noise, simplex.noise2D(0, h.pos.y / 20) * params.noise))
-
-    repulsors.forEach(r => r.repulse(hearts));
-    repulsors.forEach(r => r.draw());
-    
-    hearts.forEach(h => h.draw())
-
-    requestAnimationFrame(draw)
-}
-
-async function main() {
-    img = await loadImage(imgURL);
-    logo = await loadImage(logoURL);
-
-    const n = params.n;
-    for (let i = 0; i < n; i++) {
-        const p = new Particle(Math.random() * canvas.width, Math.random() * canvas.height);
-        hearts.push(p);
-    }
-
-    logoRepulsor = new Repulsor(canvas.width / 2, canvas.height / 2 - 40, false, true);
-    repulsors.push(logoRepulsor);
-
-    draw();
-}
-
-main();
-
-document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-
-    if (!mouseRepulsor) {
-        mouseRepulsor = new Repulsor(mouseX, mouseY, false, false);
-        repulsors.push(mouseRepulsor);
-    }
-
-    mouseRepulsor.pos.x = mouseX;
-    mouseRepulsor.pos.y = mouseY;
-})
-
-document.addEventListener('mousedown', (e) => {    
-    let repulsor = new Repulsor(e.clientX, e.clientY, true, false);
-    repulsors.push(repulsor);
-});
-
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    logoRepulsor.pos.x = canvas.width / 2;
-    logoRepulsor.pos.y = canvas.height / 2 - 40;
-})
+},{}]},{},["../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js"], null)
+//# sourceMappingURL=/index.js.map
