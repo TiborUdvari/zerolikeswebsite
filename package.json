@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel index.html ",
-    "build": "parcel build index.html --public-url /zerolikespodcast/",
+    "build": "parcel build index.html --public-url /zerolikeswebsite/",
     "predeploy": "npm run-script build",
     "deploy": "gh-pages -d dist"
   },
