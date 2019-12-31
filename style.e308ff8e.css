@@ -49,14 +49,18 @@ nav > a > img {
     height: 40px;
 }
 
+
+
 .logo {
+    --logo-width: calc(min(35vw, 350px));
     position: absolute;
-    width: 250px;
-    margin-left: -125px;
-    margin-top: calc(-125px - 40px);
+    width: var(--logo-width);
+    margin-left: calc(var(--logo-width) / -2);
+    margin-top: calc(var(--logo-width) / -2 - 40px);
     left: 50%;
     top: 50%;
     z-index: 10;
+
 }
 
 .desktop-only {
