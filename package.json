@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel index.html ",
-    "build": "parcel build index.html --public-url /zerolikeswebsite/",
+    "build": "parcel build CNAME -o CNAME index.html && mv dist/CNAME. dist/CNAME",
     "predeploy": "npm run-script build",
     "deploy": "gh-pages -d dist"
   },

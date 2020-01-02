@@ -626,11 +626,18 @@ let x = 0;
 let hearts = [];
 let repulsors = [];
 const maxSpeed = 2;
-const logoSize = 250;
-const tresh = logoSize * 1;
+let logoSize = 250;
+let tresh = 250;
 let logoRepulsor = null;
 let mouseRepulsor = null;
 const size = 40;
+document.addEventListener('DOMContentLoaded', () => {
+  const elLogo = document.querySelector('.logo');
+  console.log(elLogo);
+  logoSize = parseFloat(window.getComputedStyle(elLogo).width);
+  console.log(logoSize);
+  tresh = logoSize * 1;
+});
 const fallingParams = {
   n: 30,
   gravity: 1,
@@ -749,8 +756,7 @@ class Repulsor {
 
     this.life += 1;
 
-    if (this.visible) {
-      c.drawImage(logo, this.pos.x - logoSize / 2, this.pos.y - logoSize / 2, logoSize, logoSize);
+    if (this.visible) {//c.drawImage(logo, this.pos.x - logoSize / 2, this.pos.y - logoSize / 2, logoSize, logoSize);
     }
   }
 
@@ -804,6 +810,9 @@ window.addEventListener('resize', () => {
   canvas.height = window.innerHeight;
   logoRepulsor.pos.x = canvas.width / 2;
   logoRepulsor.pos.y = canvas.height / 2 - 40;
+  const elLogo = document.querySelector('.logo');
+  logoSize = parseFloat(window.getComputedStyle(elLogo).width);
+  tresh = logoSize * 1;
 });
 },{"./assets/heart.png":"assets/heart.png","./assets/logo.svg":"assets/logo.svg","simplex-noise":"node_modules/simplex-noise/simplex-noise.js"}],"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -833,7 +842,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49801" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55492" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
