@@ -52,7 +52,6 @@ nav > a > img {
 
 
 .logo {
-    --logo-width: calc(min(35vw, 350px));
     position: absolute;
     width: var(--logo-width);
     margin-left: calc(var(--logo-width) / -2);
@@ -68,7 +67,16 @@ nav > a > img {
     display: none;
 }
 
+:root {
+    --logo-width: 350px;
+}
+
+
 @media (min-width: 768px) {
+    :root {
+        --logo-width: 35vw;
+    }
+
     .desktop-only {
         visibility: visible;
         display: inline;
